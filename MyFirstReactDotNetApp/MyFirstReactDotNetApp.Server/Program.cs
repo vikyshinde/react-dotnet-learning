@@ -7,10 +7,26 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Define the CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost52702",
+        policy =>
+        {
+            policy.WithOrigins("https://localhost:52702")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+});
+
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
 var app = builder.Build();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -18,7 +34,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseRouting();
 
+app.UseCors("AllowLocalhost52702");
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
